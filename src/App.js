@@ -1,23 +1,58 @@
-import logo from './logo.svg';
 import './App.css';
+import Login from './Login'
+import {useEffect, useState} from 'react'
+import {getTokenFromResponse} from './spotify'
+import SpotifyWebApi from 'spotify-web-api-js'
+import Player from './Player'
+import {useDataLayerValue} from './DataLayer'
+
+const spotify = new SpotifyWebApi()
 
 function App() {
+  const [{user, token}, dispatch] = useDataLayerValue();
+  let active_playlist;
+  useEffect(() => {
+    const hash = getTokenFromResponse()
+    window.location.hash = "";
+    const _token =  hash.access_token;
+    
+    if(_token){
+      dispatch({
+        type: "SET_TOKEN",
+        token: _token
+      })
+      spotify.setAccessToken(_token)
+      spotify.getMe().then(user => {
+        console.log(user)
+        dispatch({
+          type: "SET_USER",
+          user
+        })
+
+      })
+      spotify.getUserPlaylists().then((playlists) =>{
+        var activeItem = playlists.items[playlists.items.length-1]
+        var active=activeItem?.uri?.split(":")[2]
+        console.log(active)
+        spotify.getPlaylist(active).then((resp)=>{
+          dispatch({
+                  type: "SET_CURRENT_PLAYLIST",
+                  cur_playlist: resp
+                })
+        })
+        dispatch({
+                type: "SET_PLAYLISTS",
+                playlists
+              })
+      })
+      
+    }
+    
+  },[])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {token ? <Player spotify={spotify}/> : <Login />}
     </div>
   );
 }
