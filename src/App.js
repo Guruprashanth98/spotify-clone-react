@@ -15,7 +15,7 @@ function App() {
     const hash = getTokenFromResponse()
     window.location.hash = "";
     const _token =  hash.access_token;
-    
+    console.log(_token)
     if(_token){
       dispatch({
         type: "SET_TOKEN",
@@ -33,7 +33,6 @@ function App() {
       spotify.getUserPlaylists().then((playlists) =>{
         var activeItem = playlists.items[playlists.items.length-1]
         var active=activeItem?.uri?.split(":")[2]
-        console.log(active)
         spotify.getPlaylist(active).then((resp)=>{
           dispatch({
                   type: "SET_CURRENT_PLAYLIST",
@@ -45,7 +44,7 @@ function App() {
                 playlists
               })
       })
-      
+      console.log(token)
     }
     
   },[])
