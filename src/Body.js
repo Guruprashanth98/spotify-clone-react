@@ -6,15 +6,17 @@ import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from './SongRow'
-import ReactGa from  "react-ga";
+import ReactGa from "react-ga";
 
-const Body = ({spotify}) => {
+const Body = ({spotify, event}) => {
     const [{cur_playlist} ,dispatch] = useDataLayerValue()
 
-    useEffect(() => {
-        ReactGa.initialize("G-VTF37W671T");
-        ReactGa.pageview("/");
-    },[])
+    const songChangeEvent = () => {
+        ReactGa.event({
+            category: "Song Clicks",
+            action: "Song change event",
+        })
+    }
 
 
     return ( 
@@ -31,12 +33,12 @@ const Body = ({spotify}) => {
             </div>
             <div className="body-songs">
                 <div className="body-icons">
-                    <PlayCircleFilledIcon className="body-shuffle"/>
+                    <PlayCircleFilledIcon className="body-shuffle" onClick = {event}/>
                     <FavoriteIcon fontSize = "large"/>
                     <MoreHorizIcon />
                 </div>
                 {cur_playlist?.tracks.items.map((item,idx) => (
-                    <SongRow key = {idx} track = {item.track} />
+                    <SongRow key = {idx} track = {item.track} event={songChangeEvent}/>
                 ))}
             </div>
         </div>

@@ -5,9 +5,16 @@ import  HomeIcon from "@material-ui/icons/Home"
 import SearchIcon from "@material-ui/icons/Search"
 import LibraryMusicIcon from "@material-ui/icons/LibraryMusic"
 import {useDataLayerValue} from './DataLayer'
+import ReactGa from "react-ga";
 
 const Sidebar = () => {
     const [{playlists}, dispatch] = useDataLayerValue()
+    const PlaylistSelectEvent = () => {
+        ReactGa.event({
+            category: "Playlist select",
+            action: "Playlist Visited",
+        })
+    }
     return ( 
         <div className="sidebar">
             <img className = "logo" src='https://getheavy.com/wp-content/uploads/2019/12/spotify2019-830x350.jpg' alt="spotify-logo.png"/>
@@ -19,7 +26,7 @@ const Sidebar = () => {
             <strong className  = "sidebar-title">PLAYLISTS</strong>
             <hr />
 
-            {playlists?.items?.map((item,idx) => <SidebarItem key ={idx} title={item.name}/>)}
+            {playlists?.items?.map((item,idx) => <SidebarItem key ={idx} title={item.name} event = {PlaylistSelectEvent}/>)}
         </div>
     );
 }

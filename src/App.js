@@ -5,7 +5,7 @@ import {getTokenFromResponse} from './spotify'
 import SpotifyWebApi from 'spotify-web-api-js'
 import Player from './Player'
 import {useDataLayerValue} from './DataLayer'
-
+import ReactGa from  "react-ga";
 const spotify = new SpotifyWebApi()
 
 function App() {
@@ -49,9 +49,21 @@ function App() {
     
   },[])
 
+  const onClickHandler = () => {
+    ReactGa.event({
+      category: "Sign-in",
+      action: "User sign in",
+    })
+  }
+
+  useEffect(() => {
+    ReactGa.initialize("UA-182405306-1");
+    ReactGa.pageview("/");
+  })
+
   return (
     <div className="App">
-      {token ? <Player spotify={spotify}/> : <Login />}
+      {token ? <Player spotify={spotify}/> : <Login event= {onClickHandler}/>}
     </div>
   );
 }

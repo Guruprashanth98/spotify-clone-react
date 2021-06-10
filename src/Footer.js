@@ -12,7 +12,7 @@ import { Grid, Slider } from "@material-ui/core";
 import { useDataLayerValue } from './DataLayer';
 
 
-const Footer = ({spotify}) => {
+const Footer = ({spotify, event}) => {
   const [{token, item, playing}, dispatch] = useDataLayerValue()      
   console.log("rerender")
   useEffect(()=> {
@@ -31,6 +31,7 @@ const Footer = ({spotify}) => {
   },[spotify])
 
   const handlePlayPause  = () => {
+    event();
     if(playing){
       spotify.pause()
       dispatch({
